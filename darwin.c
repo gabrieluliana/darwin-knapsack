@@ -9,10 +9,14 @@
 #include "darwin.h"
 //#include "draw.h"
 
-#define MaxWeightBag 500
-#define numberItems 20
+#define MaxWeightBag 1000
+#define numberItems 50
 
 bool finesse = 1;
+
+typedef struct{
+    bool gen[numberItems];
+}chromosome;
 
 int numberPopulation;
 
@@ -29,7 +33,7 @@ char* evolutionMode;
 chromosome* individuals = NULL;
 
 chromosome Bestindividuals[10];
-
+/*
 float ValueItems[numberItems] = {10.5, 30.2, 72.0, 7.5, 15.7, 
                                 182.75, 21.06, 18, 105, 88,
                                 2, 0.5, 50, 31.3, 24, 
@@ -39,6 +43,19 @@ float WeightItems[numberItems] = {10.5, 30.2, 72.0, 7.5, 15,
                                   182.75, 1, 90, 18, 10,
                                   100, 0.5, 50, 33, 70,
                                   20, 3, 120, 9, 50};
+*/
+float ValueItems[numberItems] = {109.92, 18.77, 125.49, 66.7, 13.63, 127.08, 132.64, 109.89, 20.35, 148.79,
+                                113.58, 123.1, 195.51, 19.83, 95.91, 95.96, 154.52, 2.87, 66.4, 40.77, 
+                                143.11, 125.37, 155.86, 99.45, 117.66, 63.1, 78.51, 65.31, 78.46, 29.82, 
+                                132.52, 52.99, 114.63, 191.04, 88.99, 109.33, 181.18, 28.12, 70.96, 28.18,
+                                46.65, 183.45, 20.19, 87.81, 182.52, 57.31, 147.94, 152.7, 130.05, 150.45};
+
+float WeightItems[numberItems] = {114.8, 78.91, 144.54, 96.99, 84.46, 138.4, 74.77, 50.05, 127.79, 5.9,
+                                 121.18, 50.08, 82.12, 74.46, 86.52, 118.19, 117.83, 161.43, 123.4, 66.09,
+                                 78.07, 148.21, 120.64, 81.58, 67.41, 5.74, 26.86, 68.07, 1.96, 119.83,
+                                 50.68, 30.01, 15.59, 47, 160.49, 110.3, 16.34, 121.34, 44.95, 136.59,
+                                 1.72, 83.59, 48.62, 26.52, 1.03, 78.36, 59.98, 150.04, 26.53, 90.45};
+
 
 float ModFloat(float x){
     return (x<0)?-x:x;
@@ -144,7 +161,7 @@ void torneioDe2(chromosome* individuals){
     for(int i = 0 ; i < numberPopulation ; i++){
 
         if(i == individualBiggerFitness){
-            printf("posição do melhor: %d, valor do melhor %f\n", i, getFitness(individuals[individualBiggerFitness]));
+            //printf("posição do melhor: %d, valor do melhor %f\n", i, getFitness(individuals[individualBiggerFitness]));
             tempPopulation[i] = individuals[individualBiggerFitness]; 
         }
         else{
@@ -292,22 +309,24 @@ void mutationController(){
 
 void printGenerationInfo(){
 
-    printf("Geração %d \n", generation);
-    printf("Taxa de Mutação %f \n", TaxMutation);
+   //printf("Geração %d \n", generation);
+    //printf("Taxa de Mutação %f \n", TaxMutation);
     //printf("----------------------População---------------");
     // for(int i=0; i<numberPopulation; i++){
     //     printf("Fitness %f \n", getFitness(individuals[i]));
     // }
     //printf("----------------------População---------------");
-    printf("Fitness do Melhor Indivíduo %f \n", getFitness(Bestindividuals[9]));
-    printf("Media da População %f \n", getPopulationAverage());
-    printf("-------------------------------------- \n");
+    //printf("Fitness do Melhor Indivíduo %f \n", getFitness(Bestindividuals[9]));
+    //printf("Media da População %f \n", getPopulationAverage());
+    //printf("-------------------------------------- \n");
+
+    printf("%d %.2f\n", generation, getFitness(Bestindividuals[9]));
 }
 
 void printBestIndividuals(){
     
     for(int i=0; i<10; i++){
-        printf("Melhor Fitness, Posição: %d         Valor: %f\n", i, getFitness(Bestindividuals[i]));
+        //printf("Melhor Fitness, Posição: %d         Valor: %f\n", i, getFitness(Bestindividuals[i]));
     }
 }
 

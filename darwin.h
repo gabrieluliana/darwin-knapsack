@@ -9,11 +9,6 @@
 //#include <GL/glut.h>
 #include <stdbool.h>
 
-
-typedef struct{
-    bool gen[20];
-}chromosome;
-
 void setupAG(int new_numberPopulation, float new_TaxMutation, float new_taxPredation);
 void startPopulation();
 void evolve();
