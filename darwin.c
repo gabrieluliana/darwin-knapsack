@@ -118,7 +118,7 @@ void startPopulation(){
     for(int i = 0; i < numberPopulation ; i++){
         for(int j = 0; j < numberItems ; j++){
             //individuals[i].x = minRange_x + ((float)rand()/(float)(RAND_MAX))*(maxRange_x-minRange_x);
-            individuals[i].gen[j] = ((bool) rand() % 2); // randbool = rand() & 1;
+            individuals[i].gen[j] = ((bool) rand() & 1); // randbool = rand() & 1;
         }   
     }
     generation = 0;
@@ -255,7 +255,7 @@ void predation(){
         prey = &individuals[i];
         for(int j = 0; j < numberItems ; j++){
                 //individuals[i].x = minRange_x + ((float)rand()/(float)(RAND_MAX))*(maxRange_x-minRange_x);
-                prey->gen[j] = ((bool) rand() % 2); // randbool = rand() & 1;
+                prey->gen[j] = ((bool) rand() & 1); // randbool = rand() & 1;
         }
     }    
 }
