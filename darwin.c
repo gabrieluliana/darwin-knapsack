@@ -152,6 +152,49 @@ void bubble_sort_mod(chromosome* individuals){
     }
 }
 
+void elitismo(){
+    
+    // Take the index of individual who have bigger fitness
+    int individualBiggerFitness = getIndividualBiggerFitness();
+
+    
+    // Create a auxiliar population
+    chromosome* tempPopulation = (chromosome*)malloc(sizeof(chromosome)*numberPopulation);
+
+    for(int i = 0 ; i < numberPopulation ; i++){
+
+        // if individual is who have bigger fitness, don't modified
+        if(individualBiggerFitness == i){
+           continue;
+        }
+        else{
+            // CrossOver with mutation
+            if(rand() & 1){
+                for(int j = 0 ; j < numberItems/2 ; j++){
+                    tempPopulation[i].gen[j] = individuals[individualBiggerFitness].gen[j];
+                    if(rand()%100 < TaxMutation){
+                        tempPopulation[i].gen[j] = !(tempPopulation[i].gen[j]);
+                    }
+                }
+            } else {
+                for(int j = numberItems/2; j < numberItems ; j++){
+                    tempPopulation[i].gen[j] = individuals[individualBiggerFitness].gen[j];
+                    if(rand()%100 < TaxMutation){
+                        tempPopulation[i].gen[j] = !(tempPopulation[i].gen[j]);
+                    }
+                }
+            }
+        }
+    }
+
+    for(int i = 0 ; i < numberPopulation ; i++){
+        individuals[i] = tempPopulation[i];
+    }
+
+    free(tempPopulation);
+    tempPopulation = NULL;
+}
+
 void torneioDe2(chromosome* individuals){
     chromosome* tempPopulation = (chromosome*)malloc(sizeof(chromosome)*numberPopulation);
     int individual1, individual2;
@@ -195,21 +238,21 @@ void torneioDe2(chromosome* individuals){
             for (int j = 0; j < numberItems/2; j++) 
             {
                 tempPopulation[i].gen[j] = individuals[father].gen[j];
+                //sorteia a mutacao dos genes
+                if(rand()%100 < TaxMutation){
+                    tempPopulation[i].gen[j] = !(tempPopulation[i].gen[j]);
+                }
             }
             //novo individuo recebe metade dos genes da mae
             for (int j = numberItems/2; j < numberItems; j++) 
             {
                 tempPopulation[i].gen[j] = individuals[mother].gen[j];
-            }
-
-            
-            //sorteia a mutacao dos genes
-            for (int j = 0; j < numberItems; j++)
-            {
+                //sorteia a mutacao dos genes
                 if(rand()%100 < TaxMutation){
                     tempPopulation[i].gen[j] = !(tempPopulation[i].gen[j]);
                 }
             }
+          
         }
         
     }
@@ -223,7 +266,7 @@ void torneioDe2(chromosome* individuals){
         individuals[i] = tempPopulation[i];
     }
     
-    bubble_sort_mod(individuals);
+    //bubble_sort_mod(individuals);
    
     free(tempPopulation);
     tempPopulation = NULL;
@@ -262,7 +305,7 @@ void predation(){
 
 void evolve(){
     torneioDe2(individuals);
-    predation();
+    //predation();
     generation++;
 
     chromosome temp;
