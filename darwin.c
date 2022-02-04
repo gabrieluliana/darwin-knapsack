@@ -302,8 +302,6 @@ void torneioDe2(chromosome* individuals){
     */
 }
 
-//void elitismo(chromosome* individuals);
-//void roleta(chromosome* individuals);
 
 float getPopulationAverage(){
     float average = 0;
@@ -421,8 +419,3 @@ void printBestIndividuals(){
         //printf("Melhor Fitness, Posição: %d         Valor: %f\n", i, getFitness(Bestindividuals[i]));
     }
 }
-
-// void freedom(){
-//     free(individuals);
-//     individuals = NULL;
-// }
