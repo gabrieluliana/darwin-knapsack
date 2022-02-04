@@ -28,6 +28,10 @@ int mode;
 
 int generation;
 
+int lighterIndividual;
+float lighterIndividualWeight = 3.4E+38;
+bool weightFlag;
+
 char* evolutionMode;
 
 chromosome* individuals = NULL;
@@ -66,6 +70,7 @@ void setupAG(int new_numberPopulation, float new_TaxMutation, float new_taxPreda
     TaxMutation = new_TaxMutation;
     defaultTaxMutation = new_TaxMutation;
     taxPredation = new_taxPredation;
+    weightFlag = 1;
     evolutionMode = (char*)malloc(sizeof(char)*20);
     strcpy(evolutionMode,"Elitismo");
     mode = 1;
@@ -78,6 +83,7 @@ void setupAG(int new_numberPopulation, float new_TaxMutation, float new_taxPreda
     }
 }
 
+//Retorna o Fitness dos items do individuo, quando fora do limite de peso retorna -1
 float getFitness(chromosome individual){
     float value = 0;
     float weight = 0; 
@@ -87,11 +93,27 @@ float getFitness(chromosome individual){
             weight += WeightItems[i];
         }
     }
-    //printf("Peso %f \n", weight);
-    if(weight <= MaxWeightBag)
+
+    if(weight <= MaxWeightBag){
+        //encontrou um peso aceitavel, coloca a flag como false
+        weightFlag = false;
         return value;
+    }
 
     return -1.0;
+}
+
+//Retorna o peso dos items do individuo
+float getWeight(chromosome individual){
+    float value = 0;
+    float weight = 0; 
+    for(int i = 0; i < numberItems ; i++){
+        if(individual.gen[i]){
+            weight += WeightItems[i];
+        }
+    }
+    return value;
+
 }
 
 
@@ -99,9 +121,17 @@ int getIndividualBiggerFitness(){
     int individualBiggerFitness = 0;
     float biggerFitness = 0.0;
     float tempFitness = 0;
+    float weight;
     for(int i = 0; i < numberPopulation ; i++){
         tempFitness = getFitness(individuals[i]);
-        if(tempFitness > biggerFitness){
+        if(weightFlag){
+            weight = getWeight(individuals[i]);
+            if(weight < lighterIndividualWeight){
+                lighterIndividualWeight = weight;
+                lighterIndividual = i;
+            }
+        }
+        else if(tempFitness > biggerFitness){
             individualBiggerFitness = i;
             biggerFitness = tempFitness;
         }
@@ -129,14 +159,6 @@ void startPopulation(){
     }
 
 }
-
-/*
-NumItens: 30;
-CapacidadeDoSaco: 20;
-Valor[30]; [10, 3,]
-Peso[30]: [5, 1]
-
-*/
 
 
 void bubble_sort_mod(chromosome* individuals){
@@ -285,17 +307,38 @@ void torneioDe2(chromosome* individuals){
 
 float getPopulationAverage(){
     float average = 0;
+    float fitness;
+    int numberValidIndividuals = 0;
     for (int i = 0 ; i < numberPopulation ; i++){
-        average += getFitness(individuals[i]);
+        fitness = getFitness(individuals[i]);
+        if(fitness > 0){
+            average += fitness;
+            numberValidIndividuals++;
+        }
     }
-    average /= numberPopulation;
+    average /= numberValidIndividuals;
     return average;
 }
 
 void predation(){
     chromosome *prey;
+    int sorted1, sorted2;
+    int bestIndividual = getIndividualBiggerFitness();
     for(int i = 0; i < numberPopulation*taxPredation; i++){
-        prey = &individuals[i];
+        sorted1 = rand()%numberPopulation;
+        sorted2 = rand()%numberPopulation;
+
+        while(sorted1 == bestIndividual)
+            sorted1 = rand()%numberPopulation;
+
+        while(sorted2 == bestIndividual)
+            sorted2 = rand()%numberPopulation;
+
+        if(getFitness(individuals[sorted1]) < getFitness(individuals[sorted2])){
+            prey = &individuals[sorted1];
+        }
+        else
+            prey = &individuals[sorted2];
         for(int j = 0; j < numberItems ; j++){
                 //individuals[i].x = minRange_x + ((float)rand()/(float)(RAND_MAX))*(maxRange_x-minRange_x);
                 prey->gen[j] = ((bool) rand() & 1); // randbool = rand() & 1;
@@ -304,8 +347,13 @@ void predation(){
 }
 
 void evolve(){
-    torneioDe2(individuals);
-    //predation();
+    if(weightFlag || finesse){
+        elitismo();
+    }
+    else{
+        torneioDe2(individuals);
+        predation();
+    }
     generation++;
 
     chromosome temp;
@@ -341,6 +389,7 @@ void mutationController(){
             TaxMutation *= 1.2;
         } else {
             TaxMutation = defaultTaxMutation;
+            finesse = true;
         }
 
         if(TaxMutation > 50){

@@ -13,9 +13,7 @@ int main(int argc, char *argv[]){
     srand(time(NULL)); //seed para reproducao dos resultados
 
     setupAG(SIZE_POPULATION, MUTATION_TAX, 0.05);
-   // printf("printf da galera \n");
     startPopulation();
-    //printf("passou do start population \n");
 
     char tecla = 'a';
     int generationJump = 1;
