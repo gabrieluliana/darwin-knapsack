@@ -9,6 +9,9 @@ Alunos:<br>
 
 Professor: Eduardo do Valle Simões<br>
 
+## Explicação em Vídeo
+[Darwin Knapsack - Explicação](https://youtu.be/jEd7Kg2b_Pg)
+
 ## Descrição do Problema
 
 O programa Darwin Knapsack foi desenvolvido para resolver o Problema da Mochila, através do uso de Algoritmos Evolutivos.<br>
